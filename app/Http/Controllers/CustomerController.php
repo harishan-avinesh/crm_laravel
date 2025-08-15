@@ -56,7 +56,8 @@ class CustomerController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $customer = \App\Models\Customer::findOrFail($id);
+        return view('customers.edit', compact('customer'));
     }
 
     /**
@@ -64,7 +65,20 @@ class CustomerController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $customer = \App\Models\Customer::findOrFail($id);
+        
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:customers,email,' . $customer->id,
+            'phone' => 'nullable|string|max:20',
+            'address' => 'nullable|string|max:255',
+            'status' => 'required|in:active,inactive',
+        ]);
+
+        $customer->update($validated);
+
+        return redirect()->route('customers.index')
+            ->with('success', 'Customer updated successfully!');
     }
 
     /**
@@ -72,6 +86,27 @@ class CustomerController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $customer = \App\Models\Customer::findOrFail($id);
+        $customer->delete();
+
+        return redirect()->route('customers.index')
+            ->with('success', 'Customer deleted successfully!');
+    }
+
+    /**
+     * Change the status of the specified resource.
+     */
+    public function changeStatus(Request $request, string $id)
+    {
+        $customer = \App\Models\Customer::findOrFail($id);
+
+        $validated = $request->validate([
+            'status' => 'required|in:active,inactive',
+        ]);
+
+        $customer->update($validated);
+
+        return redirect()->route('customers.index')
+            ->with('success', 'Customer status updated successfully!');
     }
 }

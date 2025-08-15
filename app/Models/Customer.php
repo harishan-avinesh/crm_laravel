@@ -9,7 +9,6 @@ class Customer extends Model
 {
     use HasFactory;
 
-
     protected $fillable = [
         'name',
         'email',
@@ -17,5 +16,12 @@ class Customer extends Model
         'address',
         'status',
     ];
-
+    public function proposals()
+    {
+        return $this->hasMany(Proposal::class);
+    }
+    public function transactions()
+    {
+        return $this->hasMany(Transaction::class);
+    }
 }

@@ -38,10 +38,23 @@
                                 <td class="px-4 py-2">{{ $customer->name }}</td>
                                 <td class="px-4 py-2">{{ $customer->email }}</td>
                                 <td class="px-4 py-2">{{ $customer->phone }}</td>
-                                <td class="px-4 py-2">{{ ucfirst($customer->status) }}</td>
+
+                                <!-- Status Column with Toggle -->  
                                 <td class="px-4 py-2">
-                                    <a href="{{ route('customers.edit', $customer) }}" class="text-blue-600">Edit</a>
-                                    <form action="{{ route('customers.destroy', $customer) }}" method="POST" style="display:inline;">
+                                    <form action="{{ route('customers.status', $customer) }}" method="POST" class="inline">
+                                        @csrf
+                                        @method('PATCH')
+                                        <select id ="status" name="status" class="border rounded w-full px-3 py-2" onchange="this.form.submit()">
+                                            <option value="active" {{ $customer->status == 'active' ? 'selected' : '' }}>Active</option>
+                                            <option value="inactive" {{ $customer->status == 'inactive' ? 'selected' : '' }}>Inactive</option>
+                                        </select>
+                                    </form>
+                                </td>
+                                
+                
+                                <td class="px-4 py-2">
+                                    <a href="{{ route('customers.edit', $customer) }}" class="text-blue-600 mr-2">Edit</a>
+                                    <form action="{{ route('customers.destroy', $customer) }}" method="POST" class="inline">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="text-red-600" onclick="return confirm('Delete this customer?')">Delete</button>
